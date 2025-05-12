@@ -28,6 +28,11 @@ public class GameManager
 
     public GameObject player;
     public float startTime;
+    public Vector3 playerLastPosition;
+    public Vector3 playerCurrentPosition;
+    public Vector3 playerMovementDirection;
+
+    public Vector3 groupPoint = new Vector3(0,0,100);
     
     public ProjectileManager projectileManager;
     public SpellIconManager spellIconManager;

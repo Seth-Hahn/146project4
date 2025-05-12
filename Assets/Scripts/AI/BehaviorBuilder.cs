@@ -21,8 +21,14 @@ public class BehaviorBuilder
             //                            new MoveToPlayer(agent.GetAction("attack").range),
             //                            new Attack()
             //                          });
-            result = new Selector(new BehaviorTree[] {
-                            new GoToPoint(new Vector3(0,0,0), 1)
+            result = new IndiscriminateSequence(new BehaviorTree[] {
+                new MoveToPlayer(agent.GetAction("attack").range),
+                new TrueFalse(new BehaviorTree[] {
+                                        new IsEnemyInAttackRange(agent.GetAction("attack").range),
+                                        new DebugNode("true"),
+                                        new DebugNode("false"),
+                }),
+                new Attack()
             });
         }
         else

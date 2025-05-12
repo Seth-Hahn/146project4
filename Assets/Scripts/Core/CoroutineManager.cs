@@ -14,7 +14,14 @@ public class CoroutineManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //get player's position 
+        GameManager.Instance.playerCurrentPosition = GameManager.Instance.player.transform.position;
+
+        //determine movement direction
+        GameManager.Instance.playerMovementDirection = (GameManager.Instance.playerCurrentPosition - GameManager.Instance.playerLastPosition).normalized;
+
+        //before moving to next frame, update last position to current;
+        GameManager.Instance.playerLastPosition = GameManager.Instance.playerCurrentPosition;
     }
 
     public void Run(IEnumerator coroutine)
