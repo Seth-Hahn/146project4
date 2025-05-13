@@ -7,8 +7,8 @@ public class SetGroupPoint : BehaviorTree
     {
         Vector3 playerDirection = GameManager.Instance.playerMovementDirection;
 
-        GameManager.Instance.groupPoint = -playerDirection * 25;
-        
+        GameManager.Instance.groupPoint = -playerDirection * 50;
+
         return Result.SUCCESS;
     }
 
