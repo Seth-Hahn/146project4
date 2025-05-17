@@ -7,47 +7,47 @@ public class BehaviorBuilder
         BehaviorTree result = null;
         if (agent.monster == "warlock")
         {
-            result = new Sequence(new BehaviorTree[] {
-                                        new MoveToPlayer(agent.GetAction("attack").range),
-                                        new Attack(),
-                                        new PermaBuff(),
-                                        new Heal(),
-                                        new Buff()
-                                     });
+            result = new Selector(new BehaviorTree[] {
+                new Sequence(new BehaviorTree[] {
+                    new DoesGroupPointExist(),
+                    new GoToPoint(GameManager.Instance.groupPoint, 3),
+                    new PermaBuff(),
+                    new Buff(),
+                    new Heal(),
+                }),
+                new Sequence(new BehaviorTree[]{
+                    new MoveToPlayer(15),
+                    new Heal(),
+                    new Buff(),
+                    new PermaBuff(),
+                })
+            });
         }
+
         else if (agent.monster == "zombie")
         {
-            // result = new Sequence(new BehaviorTree[] {
-            //                            new MoveToPlayer(agent.GetAction("attack").range),
-            //                            new Attack()
-            //                          });
-            // result = new IndiscriminateSequence(new BehaviorTree[] {
-            //     new MoveToPlayer(agent.GetAction("attack").range),
-            //     new TrueFalse(new BehaviorTree[] {
-            //                             new IsEnemyInAttackRange(agent.GetAction("attack").range),
-            //                             new DebugNode("true"),
-            //                             new DebugNode("false"),
-            //     }),
-            //     new Attack()
-            // });
             result = new TrueFalse(new BehaviorTree[] {
-                new NearbyEnemiesQuery(3,10),
+                new NearbyEnemiesQuery(8,20),
                 new Sequence(new BehaviorTree[] {
+                    new RemoveGroupPoint(),
                     new MoveToPlayer(agent.GetAction("attack").range),
                     new Attack(),
-                    new RemoveGroupPoint()
+                    //new RemoveGroupPoint()
                 }),
                 new TrueFalse(new BehaviorTree[] {
-                    new IsEnemyInAttackRange(agent.GetAction("attack").range),
-                    new Attack(),
+                    new IsEnemyInAttackRange(20),
+                    new Sequence(new BehaviorTree[] {
+                        new MoveToPlayer(agent.GetAction("attack").range),
+                        new Attack()
+                    }),
                     new TrueFalse(new BehaviorTree[] {
                         new DoesGroupPointExist(),
                         new TrueFalse(new BehaviorTree[] {
-                            new IsEnemyInPlayerRadius(50),
+                            new IsEnemyInPlayerRadius(25),
                             new MoveAwayFromPlayer(50),
                             new Sequence(new BehaviorTree[] {
                                 new GoToPoint(GameManager.Instance.groupPoint,10),
-                                new NearbyEnemiesQuery(3, 10),
+                                new NearbyEnemiesQuery(10, 10),
                                 new RemoveGroupPoint(),
                                 new MoveToPlayer(agent.GetAction("attack").range),
                                 new Attack(),
@@ -59,17 +59,26 @@ public class BehaviorBuilder
             });
         }
         else
-        {
+        {   //TODO: FIX SKELETON BUGGY MOVEMENT WHERE IT GETS STUCK OUTSIDE PLAYER RANGE
             result = new TrueFalse(new BehaviorTree[] {
-                new NearbyEnemiesQuery(3, 10),
+                new NearbyEnemiesQuery(8, 20),
                 new Sequence(new BehaviorTree[] {
                     new MoveToPlayer(agent.GetAction("attack").range),
-                    new Attack()
+                    new Attack(),
+                    new MoveAwayFromPlayer(20),
                 }),
                 new TrueFalse(new BehaviorTree[] {
-                    new IsEnemyInPlayerRadius(50),
-                    new MoveAwayFromPlayer(50),
-                    new GoToPoint(GameManager.Instance.groupPoint, 2)
+                    new IsEnemyInAttackRange(10),
+                    new Sequence(new BehaviorTree[] {
+                        new MoveToPlayer(agent.GetAction("attack").range),
+                        new Attack(),
+                        new MoveAwayFromPlayer(20)
+                    }),
+                    new Sequence(new BehaviorTree[] {
+                        new IsEnemyInPlayerRadius(20),
+                        new MoveAwayFromPlayer(50),
+                        new GoToPoint(GameManager.Instance.groupPoint, 2)
+                    })
                 })
             });
         }

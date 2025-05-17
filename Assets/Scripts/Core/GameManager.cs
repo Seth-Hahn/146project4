@@ -33,6 +33,9 @@ public class GameManager
     public Vector3 playerMovementDirection;
 
     public Vector3 groupPoint = new Vector3(0,0,100);
+
+    public Vector3 highestStrengthEnemy = new Vector3(0,0,100);
+    public Vector3 lowestHealthEnemy = new Vector3(0,0,100);
     
     public ProjectileManager projectileManager;
     public SpellIconManager spellIconManager;
